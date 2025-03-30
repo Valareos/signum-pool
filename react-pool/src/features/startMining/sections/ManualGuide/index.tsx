@@ -15,26 +15,11 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import LanguageIcon from "@mui/icons-material/Language";
 
 export const ManualGuide = () => {
-    const { t, i18n } = useTranslation();
-    const { resolvedLanguage } = i18n;
+    const { t } = useTranslation();
     const { poolAccount } = useAppSelector(selectPoolConfig);
 
-    const openMiningGuide = () => {
-        let url = "";
-
-        switch (resolvedLanguage) {
-            case "es":
-                url =
-                    "https://medium.com/signum-network/c%C3%B3mo-empezar-a-minar-signa-con-su-disco-duro-tutorial-completo-%EF%B8%8F-511ae600dec9";
-                break;
-
-            default:
-                url = "https://www.signum.network/mining.html";
-                break;
-        }
-
-        openExternalUrl(url);
-    };
+    const openMiningGuide = () =>
+        openExternalUrl("https://youtu.be/zeIVCKN6Kpo?feature=shared");
 
     const openBtdexWallet = () => openExternalUrl("https://btdex.trade/");
     const openOnlineWallet = () => openExternalUrl(walletUrl);
