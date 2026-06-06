@@ -131,5 +131,6 @@ bin/
 /test/
 /logging.xml
 /pool.properties
+/push-auth.local
 /jooq-schema.mv.db
 .DS_Store

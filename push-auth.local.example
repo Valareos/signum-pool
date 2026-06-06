@@ -1,0 +1,4 @@
+# Copy to push-auth.local (gitignored). Never commit push-auth.local.
+GITHUB_USER=Valareos
+GITHUB_TOKEN=ghp_or_github_pat_your_token_here
+GITHUB_REPO=Valareos/signum-pool
