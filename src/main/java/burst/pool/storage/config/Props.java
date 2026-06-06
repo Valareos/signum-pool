@@ -47,6 +47,13 @@ public class Props {
     public static final Prop<Integer> payoutRetryCount = new Prop<>("payoutRetryCount", 3);
     public static final Prop<Integer> submitNonceRetryCount = new Prop<>("submitNonceRetryCount", 3);
 
+    /** POST every accepted submission from these account IDs (unsigned, comma-separated). Empty = disabled. */
+    public static final Prop<String> farmSubmissionAccountIds = new Prop<>("farmSubmissionAccountIds", "");
+    /** Webhook URL (e.g. BTFGPOOL farm-pool-submission.php). Empty = disabled. */
+    public static final Prop<String> farmSubmissionWebhookUrl = new Prop<>("farmSubmissionWebhookUrl", "");
+    /** Optional shared secret sent as X-Farm-Webhook-Token header. */
+    public static final Prop<String> farmSubmissionWebhookSecret = new Prop<>("farmSubmissionWebhookSecret", "");
+
     public static final Prop<String> miningURL = new Prop<>("miningURL", "https://opensignumpooltestnet.ddns.net:8139");
     public static final Prop<String> miningGuide = new Prop<>("site.miningGuide", "https://signum.network/mining.html");
 

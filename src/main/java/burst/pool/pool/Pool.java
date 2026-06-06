@@ -68,6 +68,7 @@ public class Pool {
     private final Set<SignumAddress> myRewardRecipients = new HashSet<>();
     private final AtomicReference<ArrayList<Block>> recentlyForged = new AtomicReference<>();
     private final Set<?> secondaryRewardRecipients[] = new HashSet<?>[Props.passphraseSecondary.length];
+    private final FarmSubmissionNotifier farmSubmissionNotifier;
 
     public Pool(NodeService nodeService, StorageService storageService, PropertyService propertyService, MinerTracker minerTracker, String version) {
         this.storageService = storageService;
@@ -75,6 +76,7 @@ public class Pool {
         this.propertyService = propertyService;
         this.nodeService = nodeService;
         this.version = version;
+        this.farmSubmissionNotifier = new FarmSubmissionNotifier(propertyService);
         this.transactionFee.set(SignumValue.fromSigna(0.1));
         this.appendageFee.set(SignumValue.fromNQT(0));
         disposables.add(refreshMiningInfoThread());
@@ -356,12 +358,10 @@ public class Pool {
         try {
             // First for the primary account
             SignumAddress primaryAddress = burstCrypto.getAddressFromPassphrase(propertyService.getString(Props.passphrase));
+            primaryAddress.setPublicKey(null); // avoid trying to register a new public key
             SignumAddress[] rewardRecipients = nodeService.getAccountsWithRewardRecipient(primaryAddress).blockingGet();
             myRewardRecipients.clear();
             myRewardRecipients.addAll(Arrays.asList(rewardRecipients));
-            
-            // avoid trying to register a new public key
-            primaryAddress.setPublicKey(null);
             
             // Next for the secondary accounts (if any)
             for (int i = 0; i < Props.passphraseSecondary.length; i++) {
@@ -453,18 +453,23 @@ public class Pool {
             
             BigInteger newDeadline = minerTracker.onMinerSubmittedDeadline(storageService, submission.getMiner(), deadline, miningInfo.get(), userAgent);
 
+            boolean improvedPoolBest;
             if (bestSubmission.get() != null) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Best deadline is {}, new deadline is {}", bestDeadline.get(), newDeadline);
                 }
-                if (newDeadline.compareTo(bestDeadline.get()) < 0) {
+                improvedPoolBest = newDeadline.compareTo(bestDeadline.get()) < 0;
+                if (improvedPoolBest) {
                     logger.debug("Newer deadline is better! Submitting...");
                     onNewBestDeadline(miningInfo.get().getHeight(), submission, newDeadline);
                 }
             } else {
                 logger.debug("This is the first deadline, submitting...");
+                improvedPoolBest = true;
                 onNewBestDeadline(miningInfo.get().getHeight(), submission, newDeadline);
             }
+
+            farmSubmissionNotifier.notifyIfFarmSubmission(submission, localMiningInfo, deadline, newDeadline, userAgent, improvedPoolBest);
 
             return deadline;
         } finally {
