@@ -112,6 +112,7 @@ flywayMigrate.onlyIf {System.getProperty("generateSchema") == "true"}
 
 def details = versionDetails()
 def poolVersion = 'v2.2.1-BTFG'
+version = poolVersion
 
 task versionProp()  {
     doFirst {
