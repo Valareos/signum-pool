@@ -111,10 +111,11 @@ generateBurstPoolJooqSchemaSource.onlyIf {System.getProperty("generateSchema") =
 flywayMigrate.onlyIf {System.getProperty("generateSchema") == "true"}
 
 def details = versionDetails()
+def poolVersion = 'v2.2.1-BTFG'
 
 task versionProp()  {
     doFirst {
-        new File(sourceSets.main.output.resourcesDir, "/version.properties").text = "version:${details.lastTag}"
+        new File(sourceSets.main.output.resourcesDir, "/version.properties").text = "version:${poolVersion}"
     }
 }
 
@@ -130,7 +131,7 @@ shadowJar.dependsOn versionProp
 
 distributions {
     main {
-        distributionBaseName = "signum-pool-${details.lastTag}"
+        distributionBaseName = "signum-pool-${poolVersion}"
         contents {
             from 'dist/icon.ico'
             from 'dist/icon.png'

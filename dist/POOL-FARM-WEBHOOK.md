@@ -21,10 +21,12 @@ Leave `farmSubmissionWebhookUrl` empty to disable.
 
 ## Build (recommended)
 
+BTFG fork build version: **v2.2.1-BTFG** (set in `build.gradle` → `poolVersion`).
+
 ```bash
-cd signum-pool-2.2.1
+cd signum-pool
 ./gradlew shadowJar
-cp build/libs/signum-pool-*.jar /root/Signum/Pool/signum-pool-v2.2.1/signum-pool.jar
+cp build/libs/signum-pool-v2.2.1-BTFG.jar /root/Signum/Pool/signum-pool-v2.2.1/signum-pool.jar
 ```
 
 Restart the pool. Log should show: `Farm submission webhook enabled → ...`
